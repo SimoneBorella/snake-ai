@@ -17,11 +17,16 @@ class PathSearch:
         if self.hemiltonian_path is None:
             # self.hemiltonian_path = self._get_hemiltonian_path_backtrack(game_state)
             self.hemiltonian_path = self._get_hemiltonian_path_prim(game_state)
+            # self.print_hemiltonian_path(
+            #     game_state, self.hemiltonian_path
+            # )
+
+    def get_path(self, game_state):
         # self.print_hemiltonian_path(
         #     game_state, self.hemiltonian_path
         # )
-
-    def get_path(self, game_state):
+        # input()
+        
         clock_wise = [Direction.RIGHT, Direction.DOWN, Direction.LEFT, Direction.UP]
 
         w, h, snake, head_direction, food = game_state
@@ -32,7 +37,7 @@ class PathSearch:
         i = clock_wise.index(Direction(head_direction))
         actions = [clock_wise[(i - 1) % 4], clock_wise[i], clock_wise[(i + 1) % 4]]
 
-        best_delta = w * h + 1
+        best_delta = len(self.hemiltonian_path)
         best_i = (head_i + 1) % len(self.hemiltonian_path)
 
         for action in actions:
@@ -57,16 +62,10 @@ class PathSearch:
                 delta_pt = food_i - next_pt_i + len(self.hemiltonian_path)
 
             delta_snake = 0
-            while delta_snake < len(snake):
-                if (
-                    self.hemiltonian_path[
-                        (food_i + delta_snake + 1) % len(self.hemiltonian_path)
-                    ]
-                    in snake
-                ):
-                    break
+            while not self.hemiltonian_path[(food_i + delta_snake) % len(self.hemiltonian_path)] in snake:
                 delta_snake += 1
 
+            # if delta_pt + delta_snake < 2*len(snake):
             if delta_snake < len(snake):
                 continue
 
@@ -144,9 +143,11 @@ class PathSearch:
                 directions[j, i] = []
 
         # The initial cell for maze generation is chosen randomly
-        x = w // 2
-        y = h // 2
+        x = random.randint(0, w-1)
+        y = random.randint(0, h-1)
         initial_cell = (x, y)
+
+        print(x*2, y*2)
 
         current_cell = initial_cell
 
@@ -438,19 +439,19 @@ class PathSearch:
 
         print("     ", end="")
         for i in range(w):
-            print(f"{i:2} ", end="")
+            print(f"{i:3} ", end="")
         print()
 
         for i in range(h):
-            print(f"{i:2} [ ", end="")
+            print(f"{i:3} [ ", end="")
             for j in range(w):
                 p = Point(j, i)
                 if p in snake:
-                    print("&& ", end="")
+                    print("&&& ", end="")
                 elif p == food:
-                    print("OO ", end="")
+                    print("OOO ", end="")
                 elif p in path:
-                    print(f"{path.index(p):2} ", end="")
+                    print(f"{path.index(p):3} ", end="")
                 else:
                     print("-- ", end="")
             print("]")

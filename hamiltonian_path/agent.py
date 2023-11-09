@@ -42,7 +42,7 @@ def play():
     plot_mean_scores = []
     total_score = 0
     record = 0
-    game = SnakeGameAI()
+    game = SnakeGameAI(w=20, h=20)
     agent = Agent(game)
 
     while True:
